@@ -1,0 +1,167 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background: url('https://images.hdqwalls.com/download/spider-man-weaving-his-web-cl-1920x1080.jpg') center center / cover no-repeat fixed;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    height: 90%;
+    margin: 0;
+    overflow: hidden;
+    background: #18181b5e;
+    border: 1px solid #303036;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    height: 55px;
+    padding: 0 18px;
+    background: #202024;
+    border-bottom: 1px solid #303036;
+}
+
+.chat-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.online-dot {
+    width: 9px;
+    height: 9px;
+    margin-right: 10px;
+    background: #00e676;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00e676;
+}
+
+.messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 12px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.username {
+    margin-right: 7px;
+    color: #e62429;
+    font-weight: bold;
+}
+
+.message-text {
+    color: #efeff1;
+}
+
+.chat-input-area {
+    padding: 12px;
+    background: #202024;
+    border-top: 1px solid #303036;
+}
+
+.chat-form {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px;
+    color: #fff;
+    background: #0e0e10;
+    border: 1px solid #46464d;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+}
+
+.chat-input::placeholder {
+    color: #888;
+}
+
+.chat-input:focus {
+    border-color: #e62429;
+}
+
+.send-button {
+    padding: 0 18px;
+    color: #fff;
+    background: #e62429;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.send-button:hover {
+    background: #c91e23;
+}
+
+.send-button:active {
+    transform: scale(0.97);
+}
+
+.messages::-webkit-scrollbar {
+    width: 7px;
+}
+
+.messages::-webkit-scrollbar-track {
+    background: #18181b;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@media (max-width: 500px) {
+    body {
+        padding: 10px;
+    }
+
+    .chat-container {
+        width: 90%;
+        height: 90%;
+        margin: 0;
+    }
+
+    .chat-header {
+        height: 50px;
+    }
+
+    .chat-title {
+        font-size: 16px;
+    }
+
+    .send-button {
+        padding: 0 12px;
+    }
+}

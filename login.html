@@ -1,0 +1,31 @@
+<!DOCTYPE html> <!-- Megmondja, hogy ez HTML5 oldal. -->
+<html lang="hu"> <!-- A nyelv magyar. -->
+<head>
+    <meta charset="UTF-8"> <!-- Karakterkodes beallitas. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Reszponziv oldalhoz. -->
+    <title>Bejelentkezes</title> <!-- Az oldal cime. -->
+    <link rel="stylesheet" href="style.css"> <!-- CSS stiluslap csatolasa. -->
+</head>
+<body>
+    <div class="container"> <!-- A teljes tartalom tartojelzo. -->
+        <h1>Bejelentkezes</h1> <!-- Focim. -->
+        <p class="subtitle">MySQL adatbazisra kotott bejelentkezes</p> <!-- Alcim. -->
+
+        <div class="card"> <!-- Feher szinű panel. -->
+            <h2>Belépés</h2> <!-- Pelda cim. -->
+            <form id="loginForm" action="authservice.php" method="get"> <!-- Bejelentkezes form. -->
+                <input type="text" id="loginUser" name="username" placeholder="Felhasznalonev vagy email" required> <!-- Beviteli mező. -->
+                <input type="password" id="loginPass" name="password" placeholder="Jelszo" required> <!-- Jelszo mező. -->
+                <button type="submit">Bejelentkezes</button> <!-- Gomb. -->
+                <p id="loginMessage"></p> <!-- Itt jelenik meg az eredmeny uzenet. -->
+            </form>
+            <p class="switch-link">
+                Nincs fiokod? <a href="register.html">Regisztralj itt</a> <!-- Link a regisztracios oldalra. -->
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script> <!-- JavaScript betoltese. -->
+
+</body>
+</html>

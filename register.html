@@ -1,0 +1,31 @@
+<!DOCTYPE html> <!-- Megmondja, hogy ez HTML5 oldal. -->
+<html lang="hu"> <!-- A nyelv magyar. -->
+<head>
+    <meta charset="UTF-8"> <!-- Karakterkodes beallitas. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Reszponziv oldalhoz. -->
+    <title>Regisztracio</title> <!-- Az oldal cime. -->
+    <link rel="stylesheet" href="style.css"> <!-- CSS stiluslap csatolasa. -->
+</head>
+<body>
+    <div class="container"> <!-- A teljes tartalom tartojelzo. -->
+        <h1>Regisztracio</h1> <!-- Focim. -->
+        <p class="subtitle">Uj felhasznalo letrehozasa MySQL-ben</p> <!-- Alcim. -->
+
+        <div class="card"> <!-- Feher szinű panel. -->
+            <h2>Uj fiok</h2> <!-- Pelda cim. -->
+            <form id="registerForm" action="authservice.php" method="post"> <!-- Regisztracios form. -->
+                <input type="text" id="regUser" name="username" placeholder="Felhasznalonev" required> <!-- Felhasznalonev mező. -->
+                <input type="email" id="regEmail" name="email" placeholder="Email cim" required> <!-- Email mező. -->
+                <input type="password" id="regPass" name="password" placeholder="Jelszo" required> <!-- Jelszo mező. -->
+                <button type="submit">Regisztracio</button> <!-- Gomb. -->
+                <p id="regMessage"></p> <!-- Itt jelenik meg az ertekeles vagy hiba uzenet. -->
+            </form>
+            <p class="switch-link">
+                Mar van fiokod? <a href="bejelentkezes.html">Jelentkezz be</a> <!-- Link a bejelentkezes oldalra. -->
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script> <!-- JavaScript betoltese. -->
+</body>
+</html>

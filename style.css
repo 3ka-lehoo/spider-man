@@ -1,0 +1,107 @@
+/* Minden elem alaphelyzetbe allitasa */
+*{
+    margin:0; /* Nullazza a margot. */
+    padding:0; /* Nullazza a bejaratot. */
+    box-sizing:border-box; /* A boxmeret a paddinget is figyelembe veszi. */
+}
+
+html{
+    min-height:100%;
+    background-color:#111;
+}
+
+/* Az oldal teljes hattere */
+body{
+    font-family: Arial, sans-serif; /* Beallitja a betutipust. */
+    min-height:100vh; /* Minimum teljes kepernyo magassag. */
+    display:flex; /* Flexbox elrendezes. */
+    justify-content:center; /* Középre igazitas vizszintesen. */
+    align-items:center; /* Középre igazitas fuggőlegesen. */
+    background: url('https://images.hdqwalls.com/download/spider-man-weaving-his-web-cl-1920x1080.jpg') center center / cover no-repeat fixed; /* Teljes kepernyos, nem ismetlodo hatter. */
+}
+
+/* A teljes tartalom taroloja */
+.container{
+    width:400px; /* A doboz szelessege. */
+    text-align:center; /* A szoveg kozepen lesz. */
+}
+
+/* Focim */
+h1{
+    color:white; /* Feher szin. */
+    margin-bottom:10px; /* Also margó. */
+}
+
+/* Alcim */
+.subtitle{
+    color:white; /* Feher szin. */
+    margin-bottom:20px; /* Also margó. */
+}
+
+/* A feher kartyak */
+.card{
+    background:white; /* Feher hatter. */
+    padding:25px; /* Belső kitoltes. */
+    margin-bottom:20px; /* Also margó. */
+    border-radius:15px; /* Lekerekitett sarkok. */
+    box-shadow:0 5px 15px rgba(0,0,0,0.2); /* Arnyek a modern kinethoz. */
+}
+
+/* Kartya cimei */
+.card h2{
+    margin-bottom:15px; /* Also margó. */
+}
+
+/* Szovegbeviteli mezők */
+input{
+    width:100%; /* Teljes szelesseg. */
+    padding:12px; /* Belső kitoltes. */
+    margin:8px 0; /* Felső-alsó tavolsag. */
+    border:1px solid #ccc; /* Szurke szegely. */
+    border-radius:8px; /* Lekerekitett szegelyek. */
+    outline:none; /* A kattintas utan nincs alapertelmezett hatter. */
+}
+
+/* Ha rakattintok egy mezőre */
+input:focus{
+    border-color:#4facfe; /* Kék szegely a fokuszban. */
+}
+
+/* Gombok */
+button{
+    width:100%; /* Teljes szelesseg. */
+    padding:12px; /* Belső kitoltes. */
+    margin-top:10px; /* Felső margó. */
+    background:#4facfe; /* Kék hatter. */
+    color:white; /* Feher betű. */
+    border:none; /* Nincs szegely. */
+    border-radius:8px; /* Lekerekitett sarkok. */
+    cursor:pointer; /* Kez mutato a kurzor. */
+}
+
+/* Eger rahuzasa eseten */
+button:hover{
+    background:#2196f3; /* Sötétebb kék a hoverre. */
+}
+
+/* Uzenetek */
+p{
+    margin-top:10px; /* Felső margó. */
+    font-weight:bold; /* Vastag betű. */
+}
+
+.switch-link {
+    margin-top: 15px; /* Felső margó. */
+    font-size: 14px; /* Kicsi betumeret. */
+    font-weight: normal; /* Normál betűsúly. */
+}
+
+.switch-link a {
+    color: #2196f3; /* Kék link szin. */
+    text-decoration: none; /* Nincs aláhuzás. */
+    font-weight: bold; /* Vastag betű. */
+}
+
+.switch-link a:hover {
+    text-decoration: underline; /* Alahuzas hoverre. */
+}
