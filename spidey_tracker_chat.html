@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spidey Tracker Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Silkscreen', 'Press Start 2P', cursive;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        /* Pixelated rendering style */
+        .pixelated {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        /* Custom Retro Bezel Borders */
+        .pixel-border-bezel {
+            box-shadow: 
+                inset 0 0 0 4px #81beeb,
+                inset 0 0 0 8px #3275a8,
+                inset 0 0 0 12px #184873,
+                0 10px 0 0 #0d2740,
+                0 15px 25px rgba(0,0,0,0.5);
+        }
+
+        .pixel-box-shadow {
+            box-shadow: 3px 3px 0px #0d2740;
+        }
+
+        .pixel-box-shadow-sm {
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        /* Retro CRT Scanline Overlay */
+        .scanlines {
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.02),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 0, 255, 0.02)
+            );
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Custom Pixel Scrollbar for Chat */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0b131c;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3275a8;
+            border: 2px solid #0b131c;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #81beeb;
+        }
+
+        /* Screen Background Grid Pattern */
+        .spider-bg {
+            background-color: #0b131c;
+            background-image: radial-gradient(#1e3a5a 1px, transparent 1px);
+            background-size: 10px 10px;
+        }
+
+        /* Chat bubble animations */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .chat-bubble-anim {
+            animation: popIn 0.15s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 flex items-center justify-center min-h-screen p-2 md:p-6 overflow-x-hidden">
+
+    <div class="relative w-full max-w-[420px] h-[92vh] max-h-[820px] bg-[#5ba4d9] rounded-2xl p-4 flex flex-col justify-between border-4 border-[#81beeb] pixel-border-bezel select-none">
+
+        <div class="relative z-20 flex items-center justify-between mb-2">
+            <!-- Left Circular Badge (Spidey Eyes) -->
+            <button id="btn-spidey-eyes" title="Spidey Sense!" class="w-11 h-11 bg-black border-4 border-[#f08519] rounded-full flex items-center justify-center pixel-box-shadow p-1 hover:scale-105 active:translate-y-0.5 transition-all">
+                <div class="w-full h-full bg-white rounded-full flex items-center justify-around px-1 py-1.5">
+                    <div class="w-2.5 h-4 bg-black rounded-full transform -rotate-12"></div>
+                    <div class="w-2.5 h-4 bg-black rounded-full transform rotate-12"></div>
+                </div>
+            </button>
+
+            <!-- Header Plaque Title -->
+            <div class="bg-[#183957] border-2 border-[#81beeb] text-white px-3 py-1.5 rounded flex items-center gap-2 pixel-box-shadow">
+                <span class="text-[10px] sm:text-xs text-[#81beeb] tracking-tighter">SPIDEY</span>
+                <!-- Mini Spidey Icon -->
+                <div class="w-5 h-5 bg-red-600 rounded-full border border-black flex items-center justify-center p-0.5 relative">
+                    <div class="w-1.5 h-2 bg-white rounded-full -rotate-12"></div>
+                    <div class="w-1.5 h-2 bg-white rounded-full rotate-12"></div>
+                </div>
+                <span class="text-[10px] sm:text-xs text-[#81beeb] tracking-tighter">TRACKER</span>
+            </div>
+
+            <!-- Right White Square Button (Clear Chat / Action) -->
+            <button id="btn-clear-chat" title="Törlés" class="w-10 h-10 bg-slate-100 hover:bg-white border-2 border-slate-800 rounded-lg flex items-center justify-center pixel-box-shadow active:translate-y-0.5 transition-all">
+                <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C11.4 2 11 2.4 11 3V5H9C8.4 5 8 5.4 8 6V8H6C5.4 8 5 8.4 5 9V11H3C2.4 11 2 11.4 2 12C2 12.6 2.4 13 3 13H5V15H8V17H11V21C11 21.6 11.4 22 12 22C12.6 22 13 21.6 13 21V17H16V15H19V13H21C21.6 13 22 12.6 22 12C22 11.4 21.6 11 21 11H19V9H18V8C18 7.4 17.6 7 17 7H16V5H13V3C13 2.4 12.6 2 12 2ZM11 7H13V9H11V7ZM9 10H15V14H9V10Z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="absolute left-[-18px] top-24 flex flex-col gap-3 z-30">
+            <button id="tab-quick-1" title="Gyors üzenet: S.O.S." class="w-8 h-8 bg-slate-100 hover:bg-white border-2 border-slate-800 rounded-l-md flex items-center justify-center pixel-box-shadow-sm active:translate-x-0.5">
+                <span class="text-[9px] font-bold text-black">!</span>
+            </button>
+            <button id="tab-quick-2" title="Gyors üzenet: Hol vagy?" class="w-8 h-8 bg-slate-100 hover:bg-white border-2 border-slate-800 rounded-l-md flex items-center justify-center pixel-box-shadow-sm active:translate-x-0.5">
+                <span class="text-[9px] font-bold text-black">?</span>
+            </button>
+        </div>
+
+        <div class="relative flex-1 bg-[#0b131c] border-4 border-[#12283b] rounded-lg overflow-hidden flex flex-col spider-bg mb-2">
+            <!-- CRT Scanline overlay effect -->
+            <div class="absolute inset-0 scanlines z-20"></div>
+
+            <!-- Faint Spider Logo Watermark Background -->
+            <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none z-0">
+                <svg class="w-3/4 h-3/4 text-[#5ba4d9]" viewBox="0 0 100 100" fill="currentColor">
+                    <path d="M48 10 h4 v10 h-4 z M40 15 h4 v10 h-4 z M56 15 h4 v10 h-4 z M30 25 h8 v6 h-8 z M62 25 h8 v6 h-8 z M20 35 h12 v6 h-12 z M68 35 h12 v6 h-12 z M15 45 h10 v6 h-10 z M75 45 h10 v6 h-10 z M45 35 h10 v30 h-10 z M35 45 h30 v15 h-30 z M20 65 h10 v6 h-10 z M70 65 h10 v6 h-10 z M25 75 h10 v6 h-10 z M65 75 h10 v6 h-10 z M35 85 h8 v8 h-8 z M57 85 h8 v8 h-8 z"/>
+                </svg>
+            </div>
+
+            <!-- Status Indicator -->
+            <div class="relative z-10 px-3 py-1.5 bg-[#080d14]/80 border-b border-[#183957] flex justify-between items-center text-[9px] text-[#81beeb]">
+                <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>ONLINE: SPIDER-MAN</span>
+                </div>
+                <span id="chat-status" class="text-slate-400">SECURE FREQ</span>
+            </div>
+
+            <!-- Scrollable Message History Area -->
+            <div id="chat-history" class="relative z-10 flex-1 p-3 overflow-y-auto custom-scrollbar flex flex-col gap-3">
+                <!-- Welcome Message from Spidey -->
+                <div class="flex items-start gap-2 max-w-[85%] chat-bubble-anim">
+                    <!-- Spidey Pixel Avatar -->
+                    <div class="w-7 h-7 bg-red-600 border border-black rounded flex-shrink-0 flex items-center justify-center relative overflow-hidden mt-0.5">
+                        <div class="absolute bottom-0 w-full h-2 bg-blue-600"></div>
+                        <div class="flex gap-0.5 z-10">
+                            <div class="w-1.5 h-2 bg-white rounded-sm -rotate-6"></div>
+                            <div class="w-1.5 h-2 bg-white rounded-sm rotate-6"></div>
+                        </div>
+                    </div>
+                    <!-- Bubble -->
+                    <div class="bg-[#183957] border-2 border-[#3275a8] text-[#e0f2fe] text-[10px] p-2 rounded.lg rounded-tl-none leading-relaxed pixel-box-shadow-sm">
+                        <p class="text-[#f08519] font-bold mb-1 text-[8px]">SPIDEY</p>
+                        Hé! Itt a barátságos és békés Pókember! Miben segíthetek a hálómmal? 🕷️
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing indicator (Hidden by default) -->
+            <div id="typing-indicator" class="hidden relative z-10 px-3 py-1 text-[9px] text-[#81beeb] italic flex items-center gap-1 bg-[#0b131c]/90">
+                <span class="animate-bounce">●</span>
+                <span class="animate-bounce delay-100">●</span>
+                <span class="animate-bounce delay-200">●</span>
+                <span class="ml-1">Pókember épp gépel...</span>
+            </div>
+        </div>
+
+        <div class="relative z-20 flex flex-col gap-2 pt-1">
+            <!-- Top Controls Row -->
+            <div class="flex items-center gap-2">
+                <!-- Status/Header Display -->
+                <div class="flex-1 bg-[#0b131c] border-2 border-[#183957] rounded-lg h-9 flex items-center px-3 pixel-box-shadow">
+                    <span id="display-text" class="text-[10px] sm:text-xs text-[#81beeb] tracking-wider truncate">COMM-LINK READY</span>
+                </div>
+
+                <!-- Sound Toggle Button -->
+                <button id="btn-sound" title="Hang ki/be" class="w-9 h-9 bg-slate-100 hover:bg-white border-2 border-slate-800 rounded-lg flex items-center justify-center pixel-box-shadow active:translate-y-0.5 transition-transform">
+                    <svg id="sound-icon" class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Chat Input Form -->
+            <form id="chat-form" class="flex items-center gap-2">
+                <input 
+                    type="text" 
+                    id="chat-input" 
+                    placeholder="Üzenet írása..." 
+                    maxlength="80"
+                    autocomplete="off"
+                    class="flex-1 bg-[#080d14] border-2 border-[#3275a8] focus:border-[#81beeb] text-[#e0f2fe] placeholder-slate-500 text-[10px] sm:text-xs px-3 py-2.5 rounded-lg outline-none pixel-box-shadow"
+                />
+                
+                <!-- Send Button -->
+                <button 
+                    type="submit" 
+                    id="btn-send"
+                    class="bg-[#f08519] hover:bg-[#ff9426] text-black font-bold text-[10px] px-3 py-2.5 rounded-lg border-2 border-black pixel-box-shadow active:translate-y-0.5 transition-all flex items-center justify-center gap-1"
+                >
+                    <span>KÜLD</span>
+                    <svg class="w-3.5 h-3.5 text-black" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+                    </svg>
+                </button>
+            </form>
+
+            <!-- Bottom Left Orange Spidey Label Tab -->
+            <div class="flex justify-between items-center px-1 mt-0.5">
+                <div id="btn-spidey-tab" class="cursor-pointer bg-[#f08519] hover:bg-[#ff9426] border-2 border-black rounded-b-md px-3 py-0.5 text-[8px] text-black font-bold pixel-box-shadow-sm active:translate-y-0.5">
+                    SPIDEY-NET
+                </div>
+                <span class="text-[8px] text-[#184873] font-bold">v2.0 CHAT</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Web Audio Synthesizer Setup via Tone.js
+        let soundEnabled = true;
+        const synth = new Tone.Synth({
+            oscillator: { type: 'square' },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+        }).toDestination();
+
+        const receiveSynth = new Tone.Synth({
+            oscillator: { type: 'triangle' },
+            envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 }
+        }).toDestination();
+
+        function playSendSound() {
+            if (!soundEnabled) return;
+            try {
+                if (Tone.context.state !== 'running') Tone.start();
+                synth.triggerAttackRelease("C6", "16n");
+            } catch (e) { console.log(e); }
+        }
+
+        function playReceiveSound() {
+            if (!soundEnabled) return;
+            try {
+                if (Tone.context.state !== 'running') Tone.start();
+                receiveSynth.triggerAttackRelease("G5", "16n");
+                setTimeout(() => receiveSynth.triggerAttackRelease("C6", "16n"), 80);
+            } catch (e) { console.log(e); }
+        }
+
+        function playClickSound() {
+            if (!soundEnabled) return;
+            try {
+                if (Tone.context.state !== 'running') Tone.start();
+                synth.triggerAttackRelease("E5", "32n");
+            } catch (e) { console.log(e); }
+        }
+
+        // DOM Elements
+        const chatHistory = document.getElementById('chat-history');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const displayText = document.getElementById('display-text');
+        const btnSound = document.getElementById('btn-sound');
+
+        // Spidey Automated Quotes & Replies
+        const spideyQuotes = [
+            "A nagy hatalom nagy felelősséggel jár! 🕷️",
+            "Mbizsereg a Pók-ösztönöm! Valami történik...",
+            "Nyugi, a barátságos és békés Pókember vigyáz a városra!",
+            "Ezt a hálót nem lesz egyszerű kibogozni!",
+            "Bocs a késésért, épp a Zöld Manóval volt egy kis meccsem!",
+            "Thwip! Thwip! 🕸️ Lendülök is tovább!",
+            "A pizza futárkodás vagy a fotózás nehezebb? Még nem döntöttem el...",
+            "S.O.S. jelet észleltem? Már úton vagyok!",
+            "Ne aggódj, a hálóim megtartanak!",
+            "Hé, Mary Jane-nek nem mondod el ezt, ugye?"
+        ];
+
+        // Specific Keyword Match Responses
+        const keywordResponses = {
+            "szia": "Szia! Milyen a napod a városban?",
+            "hello": "Hé! Hogy s mint?",
+            "heló": "Üdv a Spidey-Chaten!",
+            "help": "Miben segíthetek? Baj van a belvárosban?",
+            "segítség": "Már lendülök is! Hol van szükség pók-erőre?",
+            "sos": "RIADÓ! Pók-ösztön bekapcsolva! Mi a helyzet?",
+            "kicsi": "Kicsi a bors, de erős... mint a pókok!",
+            "háló": "A web-lövőim 100%-os töltöttségen vannak! 🕸️"
+        };
+
+        // Scroll Chat to Bottom
+        function scrollToBottom() {
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // Append Message to UI
+        function addMessage(sender, text, isUser = false) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex items-start gap-2 max-w-[85%] chat-bubble-anim ${isUser ? 'self-end flex-row-reverse' : ''}`;
+
+            if (isUser) {
+                wrapper.innerHTML = `
+                    <div class="w-7 h-7 bg-blue-600 border border-black rounded flex-shrink-0 flex items-center justify-center text-[9px] font-bold text-white mt-0.5">
+                        YOU
+                    </div>
+                    <div class="bg-[#2a4d6c] border-2 border-[#5ba4d9] text-[#e0f2fe] text-[10px] p-2 rounded-lg rounded-tr-none leading-relaxed pixel-box-shadow-sm break-words">
+                        <p class="text-[#81beeb] font-bold mb-1 text-[8px] text-right">TE</p>
+                        ${escapeHTML(text)}
+                    </div>
+                `;
+            } else {
+                wrapper.innerHTML = `
+                    <div class="w-7 h-7 bg-red-600 border border-black rounded flex-shrink-0 flex items-center justify-center relative overflow-hidden mt-0.5">
+                        <div class="absolute bottom-0 w-full h-2 bg-blue-600"></div>
+                        <div class="flex gap-0.5 z-10">
+                            <div class="w-1.5 h-2 bg-white rounded-sm -rotate-6"></div>
+                            <div class="w-1.5 h-2 bg-white rounded-sm rotate-6"></div>
+                        </div>
+                    </div>
+                    <div class="bg-[#183957] border-2 border-[#3275a8] text-[#e0f2fe] text-[10px] p-2 rounded-lg rounded-tl-none leading-relaxed pixel-box-shadow-sm break-words">
+                        <p class="text-[#f08519] font-bold mb-1 text-[8px]">${sender}</p>
+                        ${escapeHTML(text)}
+                    </div>
+                `;
+            }
+
+            chatHistory.appendChild(wrapper);
+            scrollToBottom();
+        }
+
+        // Helper to prevent HTML injection
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Handle User Sending Message
+        function handleSendMessage(text) {
+            const message = text || chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage('USER', message, true);
+            playSendSound();
+            chatInput.value = '';
+            displayText.innerText = "MESSAGE SENT...";
+
+            // Show Typing Indicator & Generate Spidey Reply
+            typingIndicator.classList.remove('hidden');
+            scrollToBottom();
+
+            const delay = Math.floor(Math.random() * 800) + 700;
+
+            setTimeout(() => {
+                typingIndicator.classList.add('hidden');
+                
+                // Determine response
+                const lowerMsg = message.toLowerCase();
+                let reply = "";
+
+                for (let key in keywordResponses) {
+                    if (lowerMsg.includes(key)) {
+                        reply = keywordResponses[key];
+                        break;
+                    }
+                }
+
+                if (!reply) {
+                    reply = spideyQuotes[Math.floor(Math.random() * spideyQuotes.length)];
+                }
+
+                addMessage('SPIDEY', reply, false);
+                playReceiveSound();
+                displayText.innerText = "SPIDEY REPLIED!";
+            }, delay);
+        }
+
+        // Form Submit Event
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSendMessage();
+        });
+
+        // Sound Toggle Button Logic
+        btnSound.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                btnSound.classList.remove('opacity-50');
+                displayText.innerText = "SOUND: ON";
+                playClickSound();
+            } else {
+                btnSound.classList.add('opacity-50');
+                displayText.innerText = "SOUND: OFF";
+            }
+        });
+
+        // Clear Chat Button Logic
+        document.getElementById('btn-clear-chat').addEventListener('click', () => {
+            playClickSound();
+            chatHistory.innerHTML = '';
+            addMessage('SPIDEY', 'Chat törölve! Új hálót szövünk! 🕸️');
+            displayText.innerText = "CHAT CLEARED";
+        });
+
+        // Spidey Eye Button Fun Interaction
+        document.getElementById('btn-spidey-eyes').addEventListener('click', () => {
+            playClickSound();
+            displayText.innerText = "SPIDEY SENSE ACTIVE!";
+            addMessage('SPIDEY', '⚡ A Pók-ösztönöm veszélyt vagy egy jó beszélgetést jelez!');
+        });
+
+        // Quick Side Tabs
+        document.getElementById('tab-quick-1').addEventListener('click', () => {
+            handleSendMessage('S.O.S. Segítségre van szükségem!');
+        });
+
+        document.getElementById('tab-quick-2').addEventListener('click', () => {
+            handleSendMessage('Hol vagy most, Pókember?');
+        });
+
+        document.getElementById('btn-spidey-tab').addEventListener('click', () => {
+            playClickSound();
+            displayText.innerText = "FREQ: 104.8 MHz";
+        });
+    </script>
+</body>
+</html>
