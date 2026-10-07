@@ -21,10 +21,10 @@ if(isset($_GET['username']) and isset($_GET['password'])){
         $resultCheck = mysqli_num_rows($result);
         if($resultCheck > 0){
             while ($row = mysqli_fetch_assoc($result)){
-                header('Location: http://localhost/spider/chat.php');
+                header('Location: http://localhost/spiderman/chat.php');
             }
         }else{
-            header('Location: http://localhost/spider/login.html');
+            header('Location: http://localhost/spiderman/login.html');
         }
     }
 
@@ -37,7 +37,7 @@ if(isset($_POST['username']) and isset($_POST['password']) and isset($_POST['ema
     if(!($result = mysqli_query($conn, $sql))){
         echo "ERROR: Could not able to execute $sql. " . mysqli_error($conn);
     }else{
-        header('Location: http://localhost/spider/login.html');
+        header('Location: http://localhost/spiderman/login.html');
     }
 }
 // Close the database connection
