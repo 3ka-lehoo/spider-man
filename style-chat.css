@@ -44,6 +44,29 @@ body {
     font-weight: bold;
 }
 
+.chat-user-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+}
+
+.chat-user {
+    color: #c9c9ce;
+    font-size: 14px;
+}
+
+.logout-link {
+    color: #ff6b70;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.logout-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
 .online-dot {
     width: 9px;
     height: 9px;

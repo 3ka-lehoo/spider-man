@@ -1,4 +1,20 @@
-```html
+<?php
+session_start();
+
+if (isset($_GET['logout'])) {
+    $_SESSION = [];
+    session_destroy();
+    header('Location: login.html');
+    exit;
+}
+
+if (empty($_SESSION['username']) || empty($_SESSION['token'])) {
+    header('Location: login.html');
+    exit;
+}
+
+$username = htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8');
+?>
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -12,6 +28,10 @@
         <header class="chat-header">
             <div class="online-dot"></div>
             <h1 class="chat-title">Spider-Man Chat</h1>
+            <div class="chat-user-area">
+                <span class="chat-user"><?php echo $username; ?></span>
+                <a class="logout-link" href="chat.php?logout=1">Kilépés</a>
+            </div>
         </header>
 
         <div class="messages" id="messages"></div>
