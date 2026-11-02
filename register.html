@@ -14,6 +14,7 @@
         <div class="card"> <!-- Feher szinű panel. -->
             <h2>Uj fiok</h2> <!-- Pelda cim. -->
             <form id="registerForm" action="authservice.php" method="post"> <!-- Regisztracios form. -->
+                <input type="hidden" name="action" value="register">
                 <input type="text" id="regUser" name="username" placeholder="Felhasznalonev" required> <!-- Felhasznalonev mező. -->
                 <input type="email" id="regEmail" name="email" placeholder="Email cim" required> <!-- Email mező. -->
                 <input type="password" id="regPass" name="password" placeholder="Jelszo" required> <!-- Jelszo mező. -->

@@ -17,7 +17,7 @@ body{
     display:flex; /* Flexbox elrendezes. */
     justify-content:center; /* Középre igazitas vizszintesen. */
     align-items:center; /* Középre igazitas fuggőlegesen. */
-    background: url('https://images.hdqwalls.com/download/spider-man-weaving-his-web-cl-1920x1080.jpg') center center / cover no-repeat fixed; /* Teljes kepernyos, nem ismetlodo hatter. */
+    background: url(spider-background.png) center center / cover no-repeat fixed; /* Teljes kepernyos, nem ismetlodo hatter. */
 }
 
 /* A teljes tartalom taroloja */

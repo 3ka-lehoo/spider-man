@@ -13,11 +13,12 @@
 
         <div class="card"> <!-- Feher szinű panel. -->
             <h2>Belépés</h2> <!-- Pelda cim. -->
-            <form id="loginForm" action="authservice.php" method="get"> <!-- Bejelentkezes form. -->
+            <form id="loginForm" action="authservice.php" method="post"> <!-- Bejelentkezes form. -->
+                <input type="hidden" name="action" value="login">
                 <input type="text" id="loginUser" name="username" placeholder="Felhasznalonev vagy email" required> <!-- Beviteli mező. -->
                 <input type="password" id="loginPass" name="password" placeholder="Jelszo" required> <!-- Jelszo mező. -->
                 <button type="submit">Bejelentkezes</button> <!-- Gomb. -->
-                <p id="loginMessage"></p> <!-- Itt jelenik meg az eredmeny uzenet. -->
+                <p id="loginMessage" role="alert" aria-live="polite"></p> <!-- Itt jelenik meg az eredmeny uzenet. -->
             </form>
             <p class="switch-link">
                 Nincs fiokod? <a href="register.html">Regisztralj itt</a> <!-- Link a regisztracios oldalra. -->
@@ -25,7 +26,15 @@
         </div>
     </div>
 
-    <script src="script.js"></script> <!-- JavaScript betoltese. -->
+    <script>
+        const loginMessage = document.getElementById('loginMessage');
+        const loginError = new URLSearchParams(window.location.search).get('error');
+
+        if (loginError === 'invalid') {
+            loginMessage.textContent = 'Hibás felhasználónév/e-mail-cím vagy jelszó. Próbáld újra.';
+            loginMessage.style.color = '#b42318';
+        }
+    </script>
 
 </body>
 </html>
