@@ -2,9 +2,16 @@
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
+// Bejelentkezés nélkül a chat API nem használható.
 if (empty($_SESSION['username']) || empty($_SESSION['token'])) {
 	http_response_code(401);
 	echo json_encode(["error" => "A chat használatához be kell jelentkezni."], JSON_UNESCAPED_UNICODE);
+	exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'session') {
+	// Visszaadja az aktuális munkamenet felhasználónevét.
+	echo json_encode(["username" => $_SESSION['username']], JSON_UNESCAPED_UNICODE);
 	exit;
 }
 
@@ -13,6 +20,7 @@ $dbusername = "root";
 $dbpassword = "";
 $dbname = "spiderman_db";
 
+// Kapcsolódás a chat adatbázisához.
 $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
 if ($conn->connect_error) {
@@ -21,11 +29,25 @@ if ($conn->connect_error) {
 	exit;
 }
 
+// Az üzeneteket magyar karakterekkel tárolja és küldi vissza.
 $conn->set_charset("utf8mb4");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-	$sql = "SELECT id, sender_name, message, created_at FROM chat_messages ORDER BY id ASC";
-	$result = $conn->query($sql);
+	// Kezdéskor az összes üzenetet, frissítéskor csak az újakat kéri le.
+	$afterId = max(0, (int)($_GET['after'] ?? 0));
+	if ($afterId > 0) {
+		$stmt = $conn->prepare("SELECT id, sender_name, message, created_at FROM chat_messages WHERE id > ? ORDER BY id ASC");
+		if ($stmt) {
+			$stmt->bind_param("i", $afterId);
+			$stmt->execute();
+			$result = $stmt->get_result();
+		} else {
+			$result = false;
+		}
+	} else {
+		$stmt = null;
+		$result = $conn->query("SELECT id, sender_name, message, created_at FROM chat_messages ORDER BY id ASC");
+	}
 
 	if (!$result) {
 		http_response_code(500);
@@ -38,7 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		echo json_encode($messages, JSON_UNESCAPED_UNICODE);
 		$result->free();
 	}
+	if ($stmt) {
+		$stmt->close();
+	}
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	// A bejelentkezett felhasználó nevével menti az új üzenetet.
 	$senderName = trim($_SESSION['username'] ?? '');
 	$message = trim($_POST['message'] ?? '');
 
